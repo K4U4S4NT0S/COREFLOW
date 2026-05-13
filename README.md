@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 # CoreFlow
 
 Sistema web para controle real de ordens de serviço em assistência técnica.
@@ -158,10 +154,6 @@ http://localhost:5000
 - Campos de entrada/saída alterados para data e hora.
 - Administrador agora edita função, dados, senha, status ativo/inativo e apaga usuários.
 - Permissões separadas: balconista não edita campos técnicos; técnico não edita campos do balconista.
-<<<<<<< HEAD
-=======
+
 # COREFLOW
 Gestão moderna de ordens de serviço para assistência técnica.
->>>>>>> b38a3eab52085bb606a8d6951569ce4f18d8e6ff
-=======
->>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
