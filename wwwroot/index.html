@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoreFlow</title>
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="animated-bg">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <main id="loginPage" class="login-page">
+    <section class="login-card glass">
+      <img class="brand-logo login-logo" src="favicon.png" alt="CoreFlow" />
+      <h1>CoreFlow</h1>
+      <p>Gestão moderna de ordens de serviço para assistência técnica.</p>
+
+      <form id="loginForm">
+        <label>Email</label>
+        <input id="email" type="email" placeholder="admin@techservice.com" required />
+
+        <label>Senha</label>
+        <input id="password" type="password" placeholder="Digite sua senha" required />
+
+        <button type="submit">Entrar no sistema</button>
+      </form>
+    </section>
+  </main>
+
+  <main id="appPage" class="app hidden">
+    <aside class="sidebar glass">
+      <div class="logo-area">
+        <img class="brand-logo small" src="favicon.png" alt="CoreFlow" />
+        <div>
+          <h2>CoreFlow</h2>
+        </div>
+      </div>
+
+      <div id="userBox"></div>
+
+      <nav>
+        <button data-page="dashboard">Dashboard</button>
+        <button data-page="orders">Ordens de Serviço</button>
+        <button data-page="newOrder" class="only-balconista only-admin">Nova OS</button>
+        <button data-page="users" class="only-admin">Usuários</button>
+        <button data-page="statuses" class="only-admin">Status</button>
+      </nav>
+
+      <div class="realtime-box">
+        <span class="pulse"></span>
+        <div>
+          <strong>Tempo real</strong>
+          <small id="connectionStatus">Conectando...</small>
+        </div>
+      </div>
+
+      <button id="logoutBtn" class="danger">Sair</button>
+    </aside>
+
+    <section class="content">
+      <header class="topbar glass">
+        <div>
+          <h1 id="pageTitle">Dashboard</h1>
+          <p>Controle seus consertos, técnicos e atendimentos em um só lugar.</p>
+        </div>
+        <div class="top-actions">
+          <span id="lastUpdate">Última atualização: agora</span>
+        </div>
+      </header>
+
+      <section id="dashboard" class="page">
+        <div class="cards">
+          <div class="card metric"><span>Consertos hoje</span><strong id="todayCount">0</strong></div>
+          <div class="card metric"><span>Consertos na semana</span><strong id="weekCount">0</strong></div>
+          <div class="card metric"><span>Consertos no mês</span><strong id="monthCount">0</strong></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel glass">
+            <h3>Serviços por status</h3>
+            <div id="statusReport"></div>
+          </div>
+
+          <div class="panel glass">
+            <h3>Serviços por técnico</h3>
+            <div id="techReport"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="orders" class="page hidden">
+        <div class="section-head">
+          <h2>Ordens de Serviço</h2>
+          <input id="orderSearch" placeholder="Buscar por cliente, aparelho, status ou técnico..." />
+        </div>
+        <div id="ordersList"></div>
+      </section>
+
+      <section id="newOrder" class="page hidden">
+        <h2>Nova Ordem de Serviço</h2>
+        <form id="orderForm" class="form-grid glass">
+          <input name="CustomerName" placeholder="Nome do cliente" required />
+          <input name="CustomerContact" placeholder="Número/WhatsApp do cliente" required />
+          <input name="CustomerDocument" placeholder="CPF/RG do cliente" />
+          <input name="Device" placeholder="Aparelho" required />
+          <input name="ServiceValue" type="number" min="0" step="0.01" placeholder="Valor do serviço" />
+          <input name="EntryDate" type="datetime-local" required title="Data e hora de entrada" />
+          <input name="ExpectedExitDate" type="datetime-local" title="Data e hora de saída" />
+          <select name="Status" id="statusSelect"></select>
+          <select name="ReceptionistId" id="receptionistSelect"></select>
+          <select name="TechnicianId" id="technicianSelect"></select>
+          <textarea name="ProblemDescription" placeholder="Descrição do problema" required></textarea>
+          <textarea name="Notes" placeholder="Observações adicionais"></textarea>
+          <button type="submit">Cadastrar OS</button>
+        </form>
+      </section>
+
+      <section id="editOrder" class="page hidden">
+        <h2>Ordem de Serviço</h2>
+        <div class="panel glass view-panel">
+          <div class="section-head compact"><h3>Visualizar</h3><span class="meta">Dados completos da OS</span></div>
+          <div id="orderView" class="view-grid"></div>
+          <div class="receipt-actions">
+            <button id="whatsappBtn" type="button" class="secondary">WhatsApp + PDF do cupom</button>
+            <button id="receiptBtn" type="button" class="secondary hidden">Imprimir cupom fiscal / garantia</button>
+          </div>
+        </div>
+        <div class="section-head compact"><h3>Editar</h3><span class="meta" id="editPermissionInfo"></span></div>
+        <form id="editOrderForm" class="form-grid glass">
+          <input name="Id" type="hidden" />
+          <input name="CustomerName" placeholder="Nome do cliente" required />
+          <input name="CustomerContact" placeholder="Número/WhatsApp do cliente" required />
+          <input name="CustomerDocument" placeholder="CPF/RG do cliente" />
+          <input name="Device" placeholder="Aparelho" required />
+          <input name="ServiceValue" type="number" min="0" step="0.01" placeholder="Valor do serviço" />
+          <input name="EntryDate" type="datetime-local" required title="Data e hora de entrada" />
+          <input name="ExpectedExitDate" type="datetime-local" title="Data e hora de saída" />
+          <select name="Status" id="editStatusSelect"></select>
+          <select name="ReceptionistId" id="editReceptionistSelect"></select>
+          <select name="TechnicianId" id="editTechnicianSelect"></select>
+          <textarea name="ProblemDescription" placeholder="Descrição do problema" required></textarea>
+          <textarea name="Notes" placeholder="Observações"></textarea>
+          <button type="submit">Salvar alterações</button>
+        </form>
+
+        <div class="panel glass">
+          <h3>Histórico da OS</h3>
+          <div id="orderLogs"></div>
+        </div>
+      </section>
+
+      <section id="users" class="page hidden">
+        <h2>Usuários</h2>
+        <div class="section-head compact"><h3>Criar usuário</h3><span class="meta">Apenas administradores podem criar, editar e apagar usuários.</span></div>
+        <form id="userForm" class="form-inline glass">
+          <input name="Name" placeholder="Nome" required />
+          <input name="Email" type="email" placeholder="Email" required />
+          <input name="Password" type="password" placeholder="Senha" required />
+          <select name="Role">
+            <option>Admin</option>
+            <option>Balconista</option>
+            <option>Tecnico</option>
+          </select>
+          <button type="submit">Criar usuário</button>
+        </form>
+        <div class="section-head compact"><h3>Usuários cadastrados</h3><span class="meta">Edite nome, e-mail, senha, função e status.</span></div>
+        <div id="usersList"></div>
+      </section>
+
+      <section id="statuses" class="page hidden">
+        <h2>Status personalizados</h2>
+        <form id="statusForm" class="form-inline glass">
+          <input name="Name" placeholder="Novo status" required />
+          <input name="Color" type="color" value="#38bdf8" title="Cor do status" />
+          <button type="submit">Adicionar</button>
+        </form>
+        <div id="statusesList"></div>
+      </section>
+    </section>
+
+    <div id="toastContainer"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

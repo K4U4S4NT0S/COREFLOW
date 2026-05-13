@@ -1,0 +1,22 @@
+{
+  "name": "coreflow",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "dev:web": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "vercel-build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "backend": "dotnet run"
+  },
+  "dependencies": {
+    "@vitejs/plugin-basic-ssl": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=20"
+  }
+}
