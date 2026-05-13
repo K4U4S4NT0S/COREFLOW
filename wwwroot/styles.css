@@ -342,9 +342,15 @@ button.danger {
 
 .badge {
   display: inline-flex;
+<<<<<<< HEAD
   background: color-mix(in srgb, var(--status-color, #38bdf8) 18%, transparent);
   color: color-mix(in srgb, var(--status-color, #38bdf8) 82%, white);
   border: 1px solid color-mix(in srgb, var(--status-color, #38bdf8) 55%, transparent);
+=======
+  background: rgba(56, 189, 248, .16);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, .35);
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 13px;
@@ -503,6 +509,7 @@ input:disabled, textarea:disabled, select:disabled {
   .view-grid, .user-edit-form { grid-template-columns: 1fr; }
   .user-actions { flex-direction: column; }
 }
+<<<<<<< HEAD
 
 
 .receipt-actions {
@@ -540,3 +547,5 @@ button.whatsapp {
   .app { display: block; }
   .content { padding: 0; }
 }
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0

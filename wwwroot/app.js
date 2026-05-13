@@ -11,6 +11,7 @@ const state = {
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 
+<<<<<<< HEAD
 function pad2(value) { return String(value).padStart(2, "0"); }
 
 function localSqlNow(date = new Date()) {
@@ -377,6 +378,37 @@ function setLastUpdate() {
 
 setInterval(setLastUpdate, 1000);
 
+=======
+async function api(path, options = {}) {
+  const response = await fetch(path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": state.token ? `Bearer ${state.token}` : "",
+      ...(options.headers || {})
+    }
+  });
+
+  if (response.status === 401 || response.status === 403) {
+    throw new Error("Acesso negado ou sessão expirada.");
+  }
+
+  if (!response.ok) {
+    throw new Error("Erro ao processar solicitação.");
+  }
+
+  return response.json();
+}
+
+function nowLabel() {
+  return new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
+function setLastUpdate() {
+  $("#lastUpdate").textContent = `Última atualização: ${nowLabel()}`;
+}
+
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 function toast(title, message) {
   const item = document.createElement("div");
   item.className = "toast";
@@ -415,6 +447,7 @@ function showLogin() {
   $("#appPage").classList.add("hidden");
 }
 
+<<<<<<< HEAD
 function setDefaultNewOrderDates() {
   const form = $("#orderForm");
   if (!form) return;
@@ -423,6 +456,8 @@ function setDefaultNewOrderDates() {
   }
 }
 
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 function pageTitle(id) {
   const titles = {
     dashboard: "Dashboard",
@@ -437,7 +472,10 @@ function pageTitle(id) {
 
 function showPage(id) {
   state.currentPage = id;
+<<<<<<< HEAD
   if (id === "newOrder") setTimeout(setDefaultNewOrderDates, 0);
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   $$(".page").forEach(page => page.classList.add("hidden"));
   $("#" + id).classList.remove("hidden");
   $("#pageTitle").textContent = pageTitle(id);
@@ -458,12 +496,16 @@ async function loadAll() {
 }
 
 async function connectRealtime() {
+<<<<<<< HEAD
   if (state.hub) return;
 
   if (!window.signalR) {
     startDemoRealtime();
     return;
   }
+=======
+  if (!window.signalR || state.hub) return;
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 
   state.hub = new signalR.HubConnectionBuilder()
     .withUrl("/ordersHub")
@@ -477,34 +519,54 @@ async function connectRealtime() {
   state.hub.onreconnected(() => {
     $("#connectionStatus").textContent = "Online";
     toast("Tempo real ativo", "A conexão foi restaurada.");
+<<<<<<< HEAD
     refreshVisibleData(false);
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   });
 
   state.hub.on("OrderChanged", async (event) => {
     toast("Ordem atualizada", `OS #${event.orderId} foi ${event.type === "created" ? "criada" : "alterada"} por ${event.by}.`);
+<<<<<<< HEAD
     await refreshVisibleData(false);
+=======
+    await refreshVisibleData();
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   });
 
   state.hub.on("DataChanged", async () => {
     toast("Dados atualizados", "Usuários ou status foram alterados.");
+<<<<<<< HEAD
     await refreshVisibleData(false);
+=======
+    await refreshVisibleData();
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   });
 
   try {
     await state.hub.start();
     $("#connectionStatus").textContent = "Online";
   } catch {
+<<<<<<< HEAD
     startDemoRealtime();
   }
 }
 
 async function refreshVisibleData(showNotification = true) {
+=======
+    $("#connectionStatus").textContent = "Offline";
+  }
+}
+
+async function refreshVisibleData() {
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   setLastUpdate();
 
   await loadFormData().catch(() => {});
   await loadReports().catch(() => {});
 
   if (state.currentPage === "orders") await loadOrders();
+<<<<<<< HEAD
   if (state.currentPage === "editOrder") {
     const id = $("#editOrderForm")?.elements?.Id?.value;
     if (id) await openOrder(id, false);
@@ -513,6 +575,10 @@ async function refreshVisibleData(showNotification = true) {
   if (state.currentPage === "statuses" && state.user.role === "Admin") await loadStatusesPage();
 
   if (showNotification) toast("Atualizado em tempo real", "Os dados da tela foram sincronizados.");
+=======
+  if (state.currentPage === "users" && state.user.role === "Admin") await loadUsers();
+  if (state.currentPage === "statuses" && state.user.role === "Admin") await loadStatusesPage();
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 }
 
 async function loadFormData() {
@@ -521,8 +587,11 @@ async function loadFormData() {
 
   fillStatusSelect("#statusSelect");
   fillStatusSelect("#editStatusSelect");
+<<<<<<< HEAD
   fillReceptionistSelect("#receptionistSelect");
   fillReceptionistSelect("#editReceptionistSelect");
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   fillTechnicianSelect("#technicianSelect");
   fillTechnicianSelect("#editTechnicianSelect");
 }
@@ -535,6 +604,7 @@ function fillStatusSelect(selector) {
   if (current) select.value = current;
 }
 
+<<<<<<< HEAD
 function fillReceptionistSelect(selector) {
   const select = $(selector);
   if (!select) return;
@@ -550,6 +620,8 @@ function fillReceptionistSelect(selector) {
   }
 }
 
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 function fillTechnicianSelect(selector) {
   const select = $(selector);
   if (!select) return;
@@ -585,6 +657,7 @@ function filterOrders(orders) {
     return [
       order.customerName,
       order.customerContact,
+<<<<<<< HEAD
       order.customerDocument,
       order.device,
       formatCurrency(order.serviceValue),
@@ -592,6 +665,12 @@ function filterOrders(orders) {
       order.status,
       order.technician,
       order.receptionist,
+=======
+      order.device,
+      order.problemDescription,
+      order.status,
+      order.technician,
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
       order.createdBy
     ].join(" ").toLowerCase().includes(search);
   });
@@ -614,14 +693,21 @@ function renderOrders() {
             <h3>#${order.id} - ${order.device}</h3>
             <p>${order.customerName} • ${order.customerContact}</p>
           </div>
+<<<<<<< HEAD
           ${statusBadge(order.status)}
+=======
+          <span class="badge">${order.status}</span>
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
         </div>
 
         <p>${order.problemDescription}</p>
 
         <div class="meta">
           Cadastrado por: ${order.createdBy || "Não informado"} em ${order.createdAt}<br>
+<<<<<<< HEAD
           Balconista responsável: ${order.receptionist || order.createdBy || "Não informado"}<br>
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
           Técnico: ${order.technician || "Sem técnico"}<br>
           Atualizado: ${order.updatedAt || "Sem atualização"}<br>
           Concluído/Entregue: ${order.completedAt || "Ainda não"}
@@ -644,8 +730,13 @@ function labelValue(label, value) {
 
 function applyOrderPermissions(form) {
   const role = state.user.role;
+<<<<<<< HEAD
   const counterFields = ["CustomerName", "CustomerContact", "CustomerDocument", "Device", "ServiceValue", "EntryDate", "ExpectedExitDate", "ReceptionistId", "TechnicianId", "ProblemDescription"];
   const techFields = [];
+=======
+  const counterFields = ["CustomerName", "CustomerContact", "Device", "EntryDate", "ExpectedExitDate", "TechnicianId", "ProblemDescription", "EntryCondition"];
+  const techFields = ["TechnicalDiagnosis", "ServicePerformed"];
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 
   [...form.elements].forEach(field => {
     if (!field.name || field.name === "Id") return;
@@ -663,7 +754,11 @@ function applyOrderPermissions(form) {
   }
 }
 
+<<<<<<< HEAD
 async function openOrder(id, changePage = true) {
+=======
+async function openOrder(id) {
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   await loadFormData();
 
   const data = await api(`/api/orders/${id}`);
@@ -671,6 +766,7 @@ async function openOrder(id, changePage = true) {
 
   $("#orderView").innerHTML = [
     labelValue("Cliente", order.customerName),
+<<<<<<< HEAD
     labelValue("Contato/WhatsApp", order.customerContact),
     labelValue("CPF/RG", order.customerDocument),
     labelValue("Aparelho", order.device),
@@ -682,6 +778,19 @@ async function openOrder(id, changePage = true) {
     labelValue("Técnico", order.technician),
     labelValue("Cadastrado por", order.createdBy),
     labelValue("Descrição do problema", order.problemDescription),
+=======
+    labelValue("Contato", order.customerContact),
+    labelValue("Aparelho", order.device),
+    labelValue("Status", order.status),
+    labelValue("Data/hora de entrada", order.entryDate),
+    labelValue("Data/hora de saída", order.expectedExitDate),
+    labelValue("Técnico", order.technician),
+    labelValue("Cadastrado por", order.createdBy),
+    labelValue("Descrição do problema", order.problemDescription),
+    labelValue("Condição de entrada", order.entryCondition),
+    labelValue("Diagnóstico técnico", order.technicalDiagnosis),
+    labelValue("Serviço realizado", order.servicePerformed),
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     labelValue("Observações", order.notes)
   ].join("");
 
@@ -697,6 +806,7 @@ async function openOrder(id, changePage = true) {
   form.elements.Status.value = order.status;
   applyOrderPermissions(form);
 
+<<<<<<< HEAD
   const whatsappBtn = $("#whatsappBtn");
   whatsappBtn.classList.add("whatsapp");
   whatsappBtn.onclick = () => openWhatsApp(order, true);
@@ -706,6 +816,8 @@ async function openOrder(id, changePage = true) {
   receiptBtn.classList.toggle("hidden", !canReceipt);
   receiptBtn.onclick = () => emitReceipt(order);
 
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   $("#orderLogs").innerHTML = data.logs.length
     ? data.logs.map(log => `
       <div class="status-card">
@@ -716,7 +828,11 @@ async function openOrder(id, changePage = true) {
     `).join("")
     : "<p class='meta'>Nenhum histórico registrado.</p>";
 
+<<<<<<< HEAD
   if (changePage) showPage("editOrder");
+=======
+  showPage("editOrder");
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 }
 
 async function loadUsers() {
@@ -752,8 +868,11 @@ async function loadUsers() {
     });
   });
 
+<<<<<<< HEAD
   fillReceptionistSelect("#receptionistSelect");
   fillReceptionistSelect("#editReceptionistSelect");
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   fillTechnicianSelect("#technicianSelect");
   fillTechnicianSelect("#editTechnicianSelect");
   setLastUpdate();
@@ -770,6 +889,7 @@ async function loadStatusesPage() {
   state.statuses = await api("/api/statuses");
 
   $("#statusesList").innerHTML = state.statuses.map(s => `
+<<<<<<< HEAD
     <form class="status-card status-edit-form" data-id="${s.id}">
       <span class="badge" style="--status-color:${escapeHtml(s.color || '#38bdf8')}">${escapeHtml(s.name)}</span>
       <input name="Name" value="${escapeHtml(s.name)}" required />
@@ -791,6 +911,14 @@ async function loadStatusesPage() {
     });
   });
 
+=======
+    <div class="status-card">
+      <strong>${s.name}</strong>
+      <button class="danger" onclick="deleteStatus(${s.id})">Excluir</button>
+    </div>
+  `).join("");
+
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   setLastUpdate();
 }
 
@@ -807,6 +935,7 @@ function formToJson(form) {
   const data = Object.fromEntries(new FormData(form).entries());
   disabled.forEach(el => el.disabled = true);
 
+<<<<<<< HEAD
   if ("ProblemDescription" in data && !("EntryCondition" in data)) {
     data.EntryCondition = data.ProblemDescription;
   }
@@ -823,10 +952,13 @@ function formToJson(form) {
     data.ReceptionistId = data.ReceptionistId ? Number(data.ReceptionistId) : null;
   }
 
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   if ("TechnicianId" in data) {
     data.TechnicianId = data.TechnicianId ? Number(data.TechnicianId) : null;
   }
 
+<<<<<<< HEAD
   if ("ServiceValue" in data) {
     data.ServiceValue = data.ServiceValue ? Number(data.ServiceValue) : 0;
   }
@@ -1055,6 +1187,11 @@ function emitReceipt(order) {
   receiptWindow.document.close();
 }
 
+=======
+  return data;
+}
+
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 $("#loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -1105,7 +1242,10 @@ $("#orderForm").addEventListener("submit", async (e) => {
     body: JSON.stringify(formToJson(e.target))
   });
 
+<<<<<<< HEAD
   notifyDemoRealtime();
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   toast("OS cadastrada", "A ordem de serviço foi criada com sucesso.");
   e.target.reset();
   showPage("orders");
@@ -1122,7 +1262,10 @@ $("#editOrderForm").addEventListener("submit", async (e) => {
     body: JSON.stringify(data)
   });
 
+<<<<<<< HEAD
   notifyDemoRealtime();
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   toast("OS atualizada", "As alterações foram salvas com sucesso.");
   showPage("orders");
 });

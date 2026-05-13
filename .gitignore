@@ -8,6 +8,9 @@ appsettings.Development.json
 .env
 node_modules/
 dist/
+<<<<<<< HEAD
 .vercel/
 *.log
 .DS_Store
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0

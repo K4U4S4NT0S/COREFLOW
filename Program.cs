@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
+<<<<<<< HEAD
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ViteDev", policy => policy
@@ -11,6 +12,8 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod()
         .AllowCredentials());
 });
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 builder.Services.AddSignalR();
 
 builder.WebHost.UseUrls("http://localhost:5000");
@@ -20,7 +23,10 @@ var app = builder.Build();
 var dbPath = Path.Combine(AppContext.BaseDirectory, "techservice.db");
 Database.Initialize(dbPath);
 
+<<<<<<< HEAD
 app.UseCors("ViteDev");
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapHub<OrdersHub>("/ordersHub");
@@ -75,12 +81,17 @@ app.MapPost("/api/statuses", async (HttpContext ctx, StatusRequest request, IHub
     if (!IsAdmin(session)) return Results.Forbid();
 
     await using var db = Database.Open(dbPath);
+<<<<<<< HEAD
     await Database.Execute(db, "INSERT INTO Statuses(Name, Color) VALUES($name, $color)", ("$name", request.Name), ("$color", request.Color ?? "#38bdf8"));
+=======
+    await Database.Execute(db, "INSERT INTO Statuses(Name) VALUES($name)", ("$name", request.Name));
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     await hub.Clients.All.SendAsync("DataChanged", new { type = "status-created" });
 
     return Results.Ok(new { message = "Status criado com sucesso." });
 });
 
+<<<<<<< HEAD
 app.MapPut("/api/statuses/{id:int}", async (HttpContext ctx, int id, StatusRequest request, IHubContext<OrdersHub> hub) =>
 {
     var session = GetSession(ctx);
@@ -96,6 +107,8 @@ app.MapPut("/api/statuses/{id:int}", async (HttpContext ctx, int id, StatusReque
     return Results.Ok(new { message = "Status atualizado." });
 });
 
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 app.MapDelete("/api/statuses/{id:int}", async (HttpContext ctx, int id, IHubContext<OrdersHub> hub) =>
 {
     var session = GetSession(ctx);
@@ -180,7 +193,10 @@ app.MapDelete("/api/users/{id:int}", async (HttpContext ctx, int id, IHubContext
     await using var db = Database.Open(dbPath);
 
     await Database.Execute(db, "UPDATE ServiceOrders SET TechnicianId=NULL WHERE TechnicianId=$id", ("$id", id));
+<<<<<<< HEAD
     await Database.Execute(db, "UPDATE ServiceOrders SET ReceptionistId=NULL WHERE ReceptionistId=$id", ("$id", id));
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     await Database.Execute(db, "DELETE FROM Users WHERE Id=$id", ("$id", id));
     sessions.Where(x => x.Value.Id == id).Select(x => x.Key).ToList().ForEach(key => sessions.Remove(key));
 
@@ -236,12 +252,18 @@ app.MapPut("/api/orders/{id:int}", async (HttpContext ctx, int id, UpdateOrderRe
 
     await using var db = Database.Open(dbPath);
     var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+<<<<<<< HEAD
     var before = await Database.GetOrderSnapshot(db, id);
 
     await Database.UpdateOrder(db, id, request, session);
     var after = await Database.GetOrderSnapshot(db, id);
     var changes = Database.BuildChangeLog(before, after);
     await Database.AddLog(db, id, session.Id, "Atualização", changes, now);
+=======
+
+    await Database.UpdateOrder(db, id, request, session);
+    await Database.AddLog(db, id, session.Id, "Atualização", $"Ordem atualizada por {session.Name}. Status: {request.Status}.", now);
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 
     await hub.Clients.All.SendAsync("OrderChanged", new { type = "updated", orderId = id, by = session.Name, status = request.Status, at = now });
 
@@ -260,39 +282,57 @@ app.MapGet("/api/reports", async (HttpContext ctx) =>
 app.Run();
 
 record LoginRequest(string Email, string Password);
+<<<<<<< HEAD
 record StatusRequest(string Name, string? Color);
+=======
+record StatusRequest(string Name);
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 record CreateUserRequest(string Name, string Email, string Password, string Role);
 record UpdateUserRequest(string Name, string Email, string? Password, string Role, bool Active);
 
 record CreateOrderRequest(
     string CustomerName,
     string CustomerContact,
+<<<<<<< HEAD
     string? CustomerDocument,
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     string Device,
     string ProblemDescription,
     string EntryCondition,
     string EntryDate,
     string? ExpectedExitDate,
     string Status,
+<<<<<<< HEAD
     int? ReceptionistId,
     int? TechnicianId,
     decimal? ServiceValue,
+=======
+    int? TechnicianId,
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     string? Notes
 );
 
 record UpdateOrderRequest(
     string CustomerName,
     string CustomerContact,
+<<<<<<< HEAD
     string? CustomerDocument,
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     string Device,
     string ProblemDescription,
     string EntryCondition,
     string EntryDate,
     string? ExpectedExitDate,
     string Status,
+<<<<<<< HEAD
     int? ReceptionistId,
     int? TechnicianId,
     decimal? ServiceValue,
+=======
+    int? TechnicianId,
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     string? TechnicalDiagnosis,
     string? ServicePerformed,
     string? Notes
@@ -318,6 +358,7 @@ class Database
         using var db = Open(dbPath);
 
         ExecuteSync(db, "CREATE TABLE IF NOT EXISTS Users(Id INTEGER PRIMARY KEY AUTOINCREMENT,Name TEXT NOT NULL,Email TEXT NOT NULL UNIQUE,PasswordHash TEXT NOT NULL,Role TEXT NOT NULL,Active INTEGER NOT NULL DEFAULT 1);");
+<<<<<<< HEAD
         ExecuteSync(db, "CREATE TABLE IF NOT EXISTS Statuses(Id INTEGER PRIMARY KEY AUTOINCREMENT,Name TEXT NOT NULL UNIQUE,Color TEXT NOT NULL DEFAULT '#38bdf8');");
         ExecuteSync(db, "CREATE TABLE IF NOT EXISTS ServiceOrders(Id INTEGER PRIMARY KEY AUTOINCREMENT,CustomerName TEXT NOT NULL,CustomerContact TEXT NOT NULL,Device TEXT NOT NULL,ProblemDescription TEXT NOT NULL,EntryCondition TEXT NOT NULL,EntryDate TEXT NOT NULL,ExpectedExitDate TEXT,Status TEXT NOT NULL,TechnicianId INTEGER,CreatedById INTEGER NOT NULL,CreatedAt TEXT NOT NULL,UpdatedAt TEXT,TechnicalDiagnosis TEXT,ServicePerformed TEXT,Notes TEXT,CompletedAt TEXT,FOREIGN KEY(TechnicianId) REFERENCES Users(Id),FOREIGN KEY(CreatedById) REFERENCES Users(Id));");
         ExecuteSync(db, "CREATE TABLE IF NOT EXISTS OrderLogs(Id INTEGER PRIMARY KEY AUTOINCREMENT,OrderId INTEGER NOT NULL,UserId INTEGER NOT NULL,Action TEXT NOT NULL,Details TEXT NOT NULL,CreatedAt TEXT NOT NULL,FOREIGN KEY(OrderId) REFERENCES ServiceOrders(Id),FOREIGN KEY(UserId) REFERENCES Users(Id));");
@@ -343,11 +384,21 @@ class Database
         ExecuteSync(db, $"ALTER TABLE {table} ADD COLUMN {column} {definition}");
     }
 
+=======
+        ExecuteSync(db, "CREATE TABLE IF NOT EXISTS Statuses(Id INTEGER PRIMARY KEY AUTOINCREMENT,Name TEXT NOT NULL UNIQUE);");
+        ExecuteSync(db, "CREATE TABLE IF NOT EXISTS ServiceOrders(Id INTEGER PRIMARY KEY AUTOINCREMENT,CustomerName TEXT NOT NULL,CustomerContact TEXT NOT NULL,Device TEXT NOT NULL,ProblemDescription TEXT NOT NULL,EntryCondition TEXT NOT NULL,EntryDate TEXT NOT NULL,ExpectedExitDate TEXT,Status TEXT NOT NULL,TechnicianId INTEGER,CreatedById INTEGER NOT NULL,CreatedAt TEXT NOT NULL,UpdatedAt TEXT,TechnicalDiagnosis TEXT,ServicePerformed TEXT,Notes TEXT,CompletedAt TEXT,FOREIGN KEY(TechnicianId) REFERENCES Users(Id),FOREIGN KEY(CreatedById) REFERENCES Users(Id));");
+        ExecuteSync(db, "CREATE TABLE IF NOT EXISTS OrderLogs(Id INTEGER PRIMARY KEY AUTOINCREMENT,OrderId INTEGER NOT NULL,UserId INTEGER NOT NULL,Action TEXT NOT NULL,Details TEXT NOT NULL,CreatedAt TEXT NOT NULL,FOREIGN KEY(OrderId) REFERENCES ServiceOrders(Id),FOREIGN KEY(UserId) REFERENCES Users(Id));");
+
+        Seed(db);
+    }
+
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     static void Seed(SqliteConnection db)
     {
         var count = Convert.ToInt32(Scalar(db, "SELECT COUNT(*) FROM Users"));
         if (count == 0)
         {
+<<<<<<< HEAD
             ExecuteSync(db, "INSERT INTO Users(Name,Email,PasswordHash,Role,Active) VALUES($n,$e,$p,$r,1)", ("$n", "Administrador"), ("$e", "admin@coreflow.com"), ("$p", PasswordHasher.Hash("admin123")), ("$r", "Admin"));
             ExecuteSync(db, "INSERT INTO Users(Name,Email,PasswordHash,Role,Active) VALUES($n,$e,$p,$r,1)", ("$n", "Balconista"), ("$e", "balconista@coreflow.com"), ("$p", PasswordHasher.Hash("123456")), ("$r", "Balconista"));
             ExecuteSync(db, "INSERT INTO Users(Name,Email,PasswordHash,Role,Active) VALUES($n,$e,$p,$r,1)", ("$n", "Técnico"), ("$e", "tecnico@coreflow.com"), ("$p", PasswordHasher.Hash("123456")), ("$r", "Tecnico"));
@@ -385,6 +436,21 @@ class Database
             ("$r", role));
     }
 
+=======
+            ExecuteSync(db, "INSERT INTO Users(Name,Email,PasswordHash,Role,Active) VALUES($n,$e,$p,$r,1)", ("$n", "Administrador"), ("$e", "admin@techservice.com"), ("$p", PasswordHasher.Hash("admin123")), ("$r", "Admin"));
+            ExecuteSync(db, "INSERT INTO Users(Name,Email,PasswordHash,Role,Active) VALUES($n,$e,$p,$r,1)", ("$n", "Balconista Demo"), ("$e", "balc@techservice.com"), ("$p", PasswordHasher.Hash("balc123")), ("$r", "Balconista"));
+            ExecuteSync(db, "INSERT INTO Users(Name,Email,PasswordHash,Role,Active) VALUES($n,$e,$p,$r,1)", ("$n", "Técnico Demo"), ("$e", "tecnico@techservice.com"), ("$p", PasswordHasher.Hash("tecnico123")), ("$r", "Tecnico"));
+        }
+
+        var statusCount = Convert.ToInt32(Scalar(db, "SELECT COUNT(*) FROM Statuses"));
+        if (statusCount == 0)
+        {
+            foreach (var s in new[] { "Em andamento", "Concluído", "Não feito", "Aguardando peça", "Entrar em contato", "Cancelado", "Entregue" })
+                ExecuteSync(db, "INSERT INTO Statuses(Name) VALUES($name)", ("$name", s));
+        }
+    }
+
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     public static async Task<UserDb?> GetUserByEmail(SqliteConnection db, string email)
     {
         await using var cmd = db.CreateCommand();
@@ -416,11 +482,19 @@ class Database
     {
         var list = new List<object>();
         await using var cmd = db.CreateCommand();
+<<<<<<< HEAD
         cmd.CommandText = "SELECT Id,Name,Color FROM Statuses ORDER BY Name";
         await using var r = await cmd.ExecuteReaderAsync();
 
         while (await r.ReadAsync())
             list.Add(new { id = r.GetInt32(0), name = r.GetString(1), color = r.IsDBNull(2) ? "#38bdf8" : r.GetString(2) });
+=======
+        cmd.CommandText = "SELECT Id,Name FROM Statuses ORDER BY Name";
+        await using var r = await cmd.ExecuteReaderAsync();
+
+        while (await r.ReadAsync())
+            list.Add(new { id = r.GetInt32(0), name = r.GetString(1) });
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 
         return list;
     }
@@ -428,23 +502,36 @@ class Database
     public static async Task<long> InsertOrder(SqliteConnection db, CreateOrderRequest req, int createdById, string now)
     {
         await using var cmd = db.CreateCommand();
+<<<<<<< HEAD
         cmd.CommandText = "INSERT INTO ServiceOrders(CustomerName, CustomerContact, CustomerDocument, Device, ProblemDescription, EntryCondition, EntryDate, ExpectedExitDate, Status, ReceptionistId, TechnicianId, CreatedById, CreatedAt, ServiceValue, Notes) VALUES($customer,$contact,$document,$device,$problem,$condition,$entry,$exit,$status,$receptionist,$tech,$createdBy,$createdAt,$value,$notes); SELECT last_insert_rowid();";
+=======
+        cmd.CommandText = "INSERT INTO ServiceOrders(CustomerName, CustomerContact, Device, ProblemDescription, EntryCondition, EntryDate, ExpectedExitDate, Status, TechnicianId, CreatedById, CreatedAt, Notes) VALUES($customer,$contact,$device,$problem,$condition,$entry,$exit,$status,$tech,$createdBy,$createdAt,$notes); SELECT last_insert_rowid();";
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 
         AddParams(cmd,
             ("$customer", req.CustomerName),
             ("$contact", req.CustomerContact),
+<<<<<<< HEAD
             ("$document", req.CustomerDocument ?? ""),
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
             ("$device", req.Device),
             ("$problem", req.ProblemDescription),
             ("$condition", req.EntryCondition),
             ("$entry", req.EntryDate),
             ("$exit", req.ExpectedExitDate ?? ""),
             ("$status", req.Status),
+<<<<<<< HEAD
             ("$receptionist", req.ReceptionistId.HasValue ? req.ReceptionistId.Value : createdById),
             ("$tech", req.TechnicianId.HasValue ? req.TechnicianId.Value : DBNull.Value),
             ("$createdBy", createdById),
             ("$createdAt", now),
             ("$value", req.ServiceValue.HasValue ? req.ServiceValue.Value : 0),
+=======
+            ("$tech", req.TechnicianId.HasValue ? req.TechnicianId.Value : DBNull.Value),
+            ("$createdBy", createdById),
+            ("$createdAt", now),
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
             ("$notes", req.Notes ?? "")
         );
 
@@ -465,7 +552,10 @@ class Database
             AddParams(cmd,
                 ("$status", req.Status),
                 ("$updated", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+<<<<<<< HEAD
                 ("$value", req.ServiceValue.HasValue ? req.ServiceValue.Value : 0),
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
                 ("$diagnosis", req.TechnicalDiagnosis ?? ""),
                 ("$performed", req.ServicePerformed ?? ""),
                 ("$notes", req.Notes ?? ""),
@@ -474,42 +564,66 @@ class Database
         }
         else if (session.Role == "Balconista")
         {
+<<<<<<< HEAD
             cmd.CommandText = "UPDATE ServiceOrders SET CustomerName=$customer, CustomerContact=$contact, CustomerDocument=$document, Device=$device, ProblemDescription=$problem, EntryCondition=$condition, EntryDate=$entry, ExpectedExitDate=$exit, Status=$status, ReceptionistId=$receptionist, TechnicianId=$tech, UpdatedAt=$updated, ServiceValue=$value, Notes=$notes, CompletedAt=COALESCE($completedAt, CompletedAt) WHERE Id=$id;";
             AddParams(cmd,
                 ("$customer", req.CustomerName),
                 ("$contact", req.CustomerContact),
                 ("$document", req.CustomerDocument ?? ""),
+=======
+            cmd.CommandText = "UPDATE ServiceOrders SET CustomerName=$customer, CustomerContact=$contact, Device=$device, ProblemDescription=$problem, EntryCondition=$condition, EntryDate=$entry, ExpectedExitDate=$exit, Status=$status, TechnicianId=$tech, UpdatedAt=$updated, Notes=$notes, CompletedAt=COALESCE($completedAt, CompletedAt) WHERE Id=$id;";
+            AddParams(cmd,
+                ("$customer", req.CustomerName),
+                ("$contact", req.CustomerContact),
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
                 ("$device", req.Device),
                 ("$problem", req.ProblemDescription),
                 ("$condition", req.EntryCondition),
                 ("$entry", req.EntryDate),
                 ("$exit", req.ExpectedExitDate ?? ""),
                 ("$status", req.Status),
+<<<<<<< HEAD
                 ("$receptionist", req.ReceptionistId.HasValue ? req.ReceptionistId.Value : DBNull.Value),
                 ("$tech", req.TechnicianId.HasValue ? req.TechnicianId.Value : DBNull.Value),
                 ("$updated", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                 ("$value", req.ServiceValue.HasValue ? req.ServiceValue.Value : 0),
+=======
+                ("$tech", req.TechnicianId.HasValue ? req.TechnicianId.Value : DBNull.Value),
+                ("$updated", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
                 ("$notes", req.Notes ?? ""),
                 ("$completedAt", completedAt == null ? DBNull.Value : completedAt),
                 ("$id", id));
         }
         else
         {
+<<<<<<< HEAD
             cmd.CommandText = "UPDATE ServiceOrders SET CustomerName=$customer, CustomerContact=$contact, CustomerDocument=$document, Device=$device, ProblemDescription=$problem, EntryCondition=$condition, EntryDate=$entry, ExpectedExitDate=$exit, Status=$status, ReceptionistId=$receptionist, TechnicianId=$tech, UpdatedAt=$updated, ServiceValue=$value, TechnicalDiagnosis=$diagnosis, ServicePerformed=$performed, Notes=$notes, CompletedAt=COALESCE($completedAt, CompletedAt) WHERE Id=$id;";
             AddParams(cmd,
                 ("$customer", req.CustomerName),
                 ("$contact", req.CustomerContact),
                 ("$document", req.CustomerDocument ?? ""),
+=======
+            cmd.CommandText = "UPDATE ServiceOrders SET CustomerName=$customer, CustomerContact=$contact, Device=$device, ProblemDescription=$problem, EntryCondition=$condition, EntryDate=$entry, ExpectedExitDate=$exit, Status=$status, TechnicianId=$tech, UpdatedAt=$updated, TechnicalDiagnosis=$diagnosis, ServicePerformed=$performed, Notes=$notes, CompletedAt=COALESCE($completedAt, CompletedAt) WHERE Id=$id;";
+            AddParams(cmd,
+                ("$customer", req.CustomerName),
+                ("$contact", req.CustomerContact),
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
                 ("$device", req.Device),
                 ("$problem", req.ProblemDescription),
                 ("$condition", req.EntryCondition),
                 ("$entry", req.EntryDate),
                 ("$exit", req.ExpectedExitDate ?? ""),
                 ("$status", req.Status),
+<<<<<<< HEAD
                 ("$receptionist", req.ReceptionistId.HasValue ? req.ReceptionistId.Value : DBNull.Value),
                 ("$tech", req.TechnicianId.HasValue ? req.TechnicianId.Value : DBNull.Value),
                 ("$updated", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                 ("$value", req.ServiceValue.HasValue ? req.ServiceValue.Value : 0),
+=======
+                ("$tech", req.TechnicianId.HasValue ? req.TechnicianId.Value : DBNull.Value),
+                ("$updated", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
                 ("$diagnosis", req.TechnicalDiagnosis ?? ""),
                 ("$performed", req.ServicePerformed ?? ""),
                 ("$notes", req.Notes ?? ""),
@@ -524,7 +638,11 @@ class Database
     {
         var list = new List<object>();
         await using var cmd = db.CreateCommand();
+<<<<<<< HEAD
         cmd.CommandText = "SELECT o.Id, o.CustomerName, o.CustomerContact, o.CustomerDocument, o.Device, o.ProblemDescription, o.EntryCondition, o.EntryDate, o.ExpectedExitDate, o.Status, o.CreatedAt, o.UpdatedAt, o.TechnicalDiagnosis, o.ServicePerformed, o.Notes, o.CompletedAt, cb.Name as CreatedBy, r.Name as Receptionist, o.ReceptionistId, t.Name as Technician, o.ServiceValue FROM ServiceOrders o LEFT JOIN Users cb ON cb.Id = o.CreatedById LEFT JOIN Users r ON r.Id = o.ReceptionistId LEFT JOIN Users t ON t.Id = o.TechnicianId ORDER BY o.Id DESC;";
+=======
+        cmd.CommandText = "SELECT o.Id, o.CustomerName, o.CustomerContact, o.Device, o.ProblemDescription, o.EntryCondition, o.EntryDate, o.ExpectedExitDate, o.Status, o.CreatedAt, o.UpdatedAt, o.TechnicalDiagnosis, o.ServicePerformed, o.Notes, o.CompletedAt, cb.Name as CreatedBy, t.Name as Technician FROM ServiceOrders o LEFT JOIN Users cb ON cb.Id = o.CreatedById LEFT JOIN Users t ON t.Id = o.TechnicianId ORDER BY o.Id DESC;";
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
 
         await using var r = await cmd.ExecuteReaderAsync();
         while (await r.ReadAsync())
@@ -536,7 +654,11 @@ class Database
     public static async Task<object?> GetOrder(SqliteConnection db, int id)
     {
         await using var cmd = db.CreateCommand();
+<<<<<<< HEAD
         cmd.CommandText = "SELECT o.Id, o.CustomerName, o.CustomerContact, o.CustomerDocument, o.Device, o.ProblemDescription, o.EntryCondition, o.EntryDate, o.ExpectedExitDate, o.Status, o.CreatedAt, o.UpdatedAt, o.TechnicalDiagnosis, o.ServicePerformed, o.Notes, o.CompletedAt, cb.Name as CreatedBy, r.Name as Receptionist, o.ReceptionistId, t.Name as Technician, o.ServiceValue FROM ServiceOrders o LEFT JOIN Users cb ON cb.Id = o.CreatedById LEFT JOIN Users r ON r.Id = o.ReceptionistId LEFT JOIN Users t ON t.Id = o.TechnicianId WHERE o.Id=$id;";
+=======
+        cmd.CommandText = "SELECT o.Id, o.CustomerName, o.CustomerContact, o.Device, o.ProblemDescription, o.EntryCondition, o.EntryDate, o.ExpectedExitDate, o.Status, o.CreatedAt, o.UpdatedAt, o.TechnicalDiagnosis, o.ServicePerformed, o.Notes, o.CompletedAt, cb.Name as CreatedBy, t.Name as Technician FROM ServiceOrders o LEFT JOIN Users cb ON cb.Id = o.CreatedById LEFT JOIN Users t ON t.Id = o.TechnicianId WHERE o.Id=$id;";
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
         cmd.Parameters.AddWithValue("$id", id);
 
         await using var r = await cmd.ExecuteReaderAsync();
@@ -550,6 +672,7 @@ class Database
             id = r.GetInt32(0),
             customerName = r.GetString(1),
             customerContact = r.GetString(2),
+<<<<<<< HEAD
             customerDocument = r.IsDBNull(3) ? "" : r.GetString(3),
             device = r.GetString(4),
             problemDescription = r.GetString(5),
@@ -616,6 +739,25 @@ class Database
         return changes.Count > 0 ? string.Join("; ", changes) : "Nenhum campo principal foi alterado.";
     }
 
+=======
+            device = r.GetString(3),
+            problemDescription = r.GetString(4),
+            entryCondition = r.GetString(5),
+            entryDate = r.GetString(6),
+            expectedExitDate = r.IsDBNull(7) ? "" : r.GetString(7),
+            status = r.GetString(8),
+            createdAt = r.GetString(9),
+            updatedAt = r.IsDBNull(10) ? "" : r.GetString(10),
+            technicalDiagnosis = r.IsDBNull(11) ? "" : r.GetString(11),
+            servicePerformed = r.IsDBNull(12) ? "" : r.GetString(12),
+            notes = r.IsDBNull(13) ? "" : r.GetString(13),
+            completedAt = r.IsDBNull(14) ? "" : r.GetString(14),
+            createdBy = r.IsDBNull(15) ? "" : r.GetString(15),
+            technician = r.IsDBNull(16) ? "" : r.GetString(16)
+        };
+    }
+
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
     public static async Task AddLog(SqliteConnection db, long orderId, int userId, string action, string details, string now)
     {
         await Execute(db, "INSERT INTO OrderLogs(OrderId,UserId,Action,Details,CreatedAt) VALUES($order,$user,$action,$details,$created)", ("$order", orderId), ("$user", userId), ("$action", action), ("$details", details), ("$created", now));
@@ -703,11 +845,18 @@ class Database
         cmd.ExecuteNonQuery();
     }
 
+<<<<<<< HEAD
     static object? Scalar(SqliteConnection db, string sql, params (string, object)[] parameters)
     {
         using var cmd = db.CreateCommand();
         cmd.CommandText = sql;
         AddParams(cmd, parameters);
+=======
+    static object? Scalar(SqliteConnection db, string sql)
+    {
+        using var cmd = db.CreateCommand();
+        cmd.CommandText = sql;
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
         return cmd.ExecuteScalar();
     }
 

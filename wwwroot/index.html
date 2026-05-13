@@ -104,6 +104,7 @@
         <h2>Nova Ordem de Serviço</h2>
         <form id="orderForm" class="form-grid glass">
           <input name="CustomerName" placeholder="Nome do cliente" required />
+<<<<<<< HEAD
           <input name="CustomerContact" placeholder="Número/WhatsApp do cliente" required />
           <input name="CustomerDocument" placeholder="CPF/RG do cliente" />
           <input name="Device" placeholder="Aparelho" required />
@@ -114,6 +115,16 @@
           <select name="ReceptionistId" id="receptionistSelect"></select>
           <select name="TechnicianId" id="technicianSelect"></select>
           <textarea name="ProblemDescription" placeholder="Descrição do problema" required></textarea>
+=======
+          <input name="CustomerContact" placeholder="Contato do cliente" required />
+          <input name="Device" placeholder="Aparelho" required />
+          <input name="EntryDate" type="datetime-local" required title="Data e hora de entrada" />
+          <input name="ExpectedExitDate" type="datetime-local" title="Data e hora de saída" />
+          <select name="Status" id="statusSelect"></select>
+          <select name="TechnicianId" id="technicianSelect"></select>
+          <textarea name="ProblemDescription" placeholder="Descrição do problema" required></textarea>
+          <textarea name="EntryCondition" placeholder="Condição do aparelho na entrada" required></textarea>
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
           <textarea name="Notes" placeholder="Observações adicionais"></textarea>
           <button type="submit">Cadastrar OS</button>
         </form>
@@ -124,15 +135,19 @@
         <div class="panel glass view-panel">
           <div class="section-head compact"><h3>Visualizar</h3><span class="meta">Dados completos da OS</span></div>
           <div id="orderView" class="view-grid"></div>
+<<<<<<< HEAD
           <div class="receipt-actions">
             <button id="whatsappBtn" type="button" class="secondary">WhatsApp + PDF do cupom</button>
             <button id="receiptBtn" type="button" class="secondary hidden">Imprimir cupom fiscal / garantia</button>
           </div>
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
         </div>
         <div class="section-head compact"><h3>Editar</h3><span class="meta" id="editPermissionInfo"></span></div>
         <form id="editOrderForm" class="form-grid glass">
           <input name="Id" type="hidden" />
           <input name="CustomerName" placeholder="Nome do cliente" required />
+<<<<<<< HEAD
           <input name="CustomerContact" placeholder="Número/WhatsApp do cliente" required />
           <input name="CustomerDocument" placeholder="CPF/RG do cliente" />
           <input name="Device" placeholder="Aparelho" required />
@@ -143,6 +158,18 @@
           <select name="ReceptionistId" id="editReceptionistSelect"></select>
           <select name="TechnicianId" id="editTechnicianSelect"></select>
           <textarea name="ProblemDescription" placeholder="Descrição do problema" required></textarea>
+=======
+          <input name="CustomerContact" placeholder="Contato do cliente" required />
+          <input name="Device" placeholder="Aparelho" required />
+          <input name="EntryDate" type="datetime-local" required title="Data e hora de entrada" />
+          <input name="ExpectedExitDate" type="datetime-local" title="Data e hora de saída" />
+          <select name="Status" id="editStatusSelect"></select>
+          <select name="TechnicianId" id="editTechnicianSelect"></select>
+          <textarea name="ProblemDescription" placeholder="Descrição do problema" required></textarea>
+          <textarea name="EntryCondition" placeholder="Condição do aparelho na entrada" required></textarea>
+          <textarea name="TechnicalDiagnosis" placeholder="Diagnóstico técnico"></textarea>
+          <textarea name="ServicePerformed" placeholder="Serviço realizado"></textarea>
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
           <textarea name="Notes" placeholder="Observações"></textarea>
           <button type="submit">Salvar alterações</button>
         </form>
@@ -175,7 +202,10 @@
         <h2>Status personalizados</h2>
         <form id="statusForm" class="form-inline glass">
           <input name="Name" placeholder="Novo status" required />
+<<<<<<< HEAD
           <input name="Color" type="color" value="#38bdf8" title="Cor do status" />
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
           <button type="submit">Adicionar</button>
         </form>
         <div id="statusesList"></div>
@@ -186,7 +216,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+<<<<<<< HEAD
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+=======
+>>>>>>> e1c79448a598f0e7bf0a392e2906b1b81f7271e0
   <script src="app.js"></script>
 </body>
 </html>
